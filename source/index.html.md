@@ -1,15 +1,14 @@
 ---
 title: API Reference
 
-language_tabs: # must be one of https://git.io/vQNgJ
+<!--language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
+  - java
   - python
-  - javascript
+-->
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -19,147 +18,111 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
-
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Welcome to the EasyYU open data API.
 
 # Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
 
 Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
 
 Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-`Authorization: meowmeowmeow`
+`Authorization: testtesttest`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>testtesttest</code> with your personal API key.
 </aside>
 
-# Kittens
+# Courses 
 
-## Get All Kittens
+## Get courses by subject
 
-```ruby
-require 'kittn'
+This endpoint retrieves courses based on subject parameters.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+### HTTP Request
 
-```python
-import kittn
+`GET http://example.com/api/v1/courses/<subject>`
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+Parameter | Description
+--------- | -----------
+Subject | Get all courses for a given subject code (ie. EECS, MATH)
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
 
-```javascript
-const kittn = require('kittn');
+## Get courses by query
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
+Search for courses based on given parameters.
 
-> The above command returns JSON structured like this:
+### Query Parameters
+
+Parameter | Optional | Description
+--------- | ------- | -----------
+subject, course_number | yes | Get course info with subject and course number (ie. EECS 1019)
+faculty | yes | List all courses under a given faculty (ie. LE, HH, etc.) 
+
+
+## Get courses by instructor
+
+> Example response:
 
 ```json
 [
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "faculty": "LE",
+    "subject": "EECS",
+    "course_number": "4101",
+    "name": "Advanced Data Structures",
+    "description": "Amortized and worst-case analysis of data structures. Data structuring paradigms: self-adjustment and persistence. Lists: self-adjustment with the move-to-front heuristic. Search trees: splay trees, finger search trees. Heaps: skew heaps, Fibonacci heaps. Union-find trees. Link-and-cut trees. Multidimensional data structures and dynamization. Integrated with: GS/CSE 5101 3.00. Prerequisites: cumulative GPA of 4.50 or better over all major EECS courses (without second digit \"5\"); LE/EECS 2030 3.00 or LE/EECS 1030 3.00; LE/EECS 2001 3.00, LE/EECS 3101 3.00. Previously offered as: LE/CSE 4101 3.00. PRIOR TO SUMMER 2013: SC/CSE 4101 3.00.",
+    "credit": "3.00",
+    "instruction_language": "English",
+    "offerings": [
+      {
+        "term": "W",
+        "section": "Section M",
+        "course_info": [
+          {
+            "type": "LECT 01",
+            "meet_info": [
+              {
+                "day": "T",
+                "start_time": "13:00",
+                "duration": "90",
+                "location": "CC 108"
+              },
+              {
+                "day": "R",
+                "start_time": "13:00",
+                "duration": "90",
+                "location": "CC 108"
+              }
+            ],
+            "cat": [
+              "F19A01"
+            ],
+            "instructor": [
+              "Patrick Dymond"
+            ],
+            "notes": [
+              "$5.00 - Course Materials"
+            ]
+          }
+        ]
+      }
+    ],
+    "course_url": "https://w2prod.sis.yorku.ca/Apps/WebObjects/cdm.woa/wa/crsq?fa=LE&sj=EECS&cn=4101&cr=3.00&ay=2019&ss=FW"
   }
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves courses taught by the requested instructor query.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+`GET http://example.com/api/v1/courses/search?q=<instructor>`
 
 <aside class="success">
 Remember — a happy kitten is an authenticated kitten!
 </aside>
 
 ## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
 
 > The above command returns JSON structured like this:
 
@@ -187,53 +150,79 @@ Parameter | Description
 --------- | -----------
 ID | The ID of the kitten to retrieve
 
-## Delete a Specific Kitten
+# Subject
 
-```ruby
-require 'kittn'
+## Get All Subjects
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
+> Response should look like this:
+
+```json
+[
+  {
+    "subject": "ACTG",
+    "name": "Accounting"
+  },
+  {
+    "subject": "ADLW",
+    "name": "Administrative Law"
+  },
+  ...
+  {
+    "subject": "YSDN",
+    "name": "York/Sheridan Design"
+  }
+]
 ```
 
-```python
-import kittn
+Retrieves all subject codes and its respective name
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
+### HTTP Request
+`GET http://example.com/api/v1/subject`
+
+# Faculty
+
+## Get All Faculty
+
+```json
+[
+  {
+    "code": "HH",
+    "name": "Faculty of Health"
+  },
+  {
+    "code": "SB",
+    "name": "Schulich School of Business"
+  },
+  ...
+  {
+    "code": "ES",
+    "name": "Faculty of Environmental Studies"
+  }
+]
 ```
 
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
+Returns list of all faculty present at York University.
 
-```javascript
-const kittn = require('kittn');
+### HTTP Request
+`GET http://example.com/api/v1/faculty`
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
 
-> The above command returns JSON structured like this:
+## Get Specific Faculty
 
 ```json
 {
-  "id": 2,
-  "deleted" : ":("
+  "code": "LE",
+  "name": "Lassonde School of Engineering"
 }
 ```
-
-This endpoint deletes a specific kitten.
+Returns information about a specific faculty.
 
 ### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
+`GET http://example.com/api/v1/faculty/<Faculty>`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to delete
+Faculty | Faculty code to retrieve both the code and full name of the faculty.
 
